@@ -1,0 +1,111 @@
+import random
+import time
+
+# Game setup
+Game_Level = int(input('Please choose the Game Level: (1:Easy, 2:Medium, 3:Hard, 4:Extreme) '))
+
+Levels = {1: [0.10, 0.12, 0.13, 0.30, 0.32, 0.03],
+          2: [0.18, 0.18, 0.16, 0.15, 0.15, 0.18],
+          3: [0.15, 0.15, 0.15, 0.14, 0.14, 0.27],
+          4: [0.14, 0.14, 0.12, 0.10, 0.10, 0.40]}
+
+Overs = 10
+Wickets = 10
+
+opts = [0,1,2,4,6,'Out']
+probs = Levels[Game_Level]
+
+
+Team1 = 'India'
+Team2 = 'Australia'
+Teams = [Team1,Team2]
+
+in_1_team_score = 0
+in_2_team_score = 0
+
+print(f"{Team1} Vs {Team2}".center(150),' ')
+
+#Toss
+
+batting_team = random.choices(Teams)[0]
+Teams.remove(batting_team)
+bowling_team = Teams[0]
+
+
+print(f"{batting_team} won the toss, chose to Bat first!\n\n")
+
+
+# First Inning
+print("First Inning")
+print(f"Team: {batting_team}",end = "\n")
+
+wickets_in_hand = Wickets
+for over in range(Overs):
+    print(f"\n\nOver {over + 1}")
+    print('|',end='')
+    for ball_count in range(1,7):
+        ball = random.choices(opts, probs, k=1)[0]
+        if ball != 'Out':
+            print(f"{ball}, ",end='')       
+            in_1_team_score += ball 
+
+        else:
+            print("W, ",end='')
+            wickets_in_hand -= 1
+            if wickets_in_hand == 0:
+                break
+
+    print('\b\b|')
+    time.sleep(1)
+    if wickets_in_hand == 0:
+        break
+            
+print(f"\n\n{batting_team}: {in_1_team_score}/{Wickets - wickets_in_hand} - {over+1 if (ball_count % 6 == 0) and (ball_count != 0) else over}.{ball_count} Overs")
+print('_  _  _  _  _  _  _')
+time.sleep(3)
+
+
+# Second Inning
+print(f"\nSecond Inning,\nTarget: {in_1_team_score+1}")
+print(f"Team: {bowling_team}",end = "\n\n")
+
+wickets_in_hand = Wickets
+for over in range(Overs):
+    print(f"\nOver {over + 1}")
+    print('|',end='')
+    for ball_count in range(1,7):
+        ball = random.choices(opts, probs, k=1)[0]
+        if ball != 'Out':
+            print(f"{ball}, ",end='')       
+            in_2_team_score += ball
+            if in_2_team_score > in_1_team_score:
+                break
+        else:
+            print("W, ",end='')
+            wickets_in_hand -= 1
+            if wickets_in_hand == 0:
+                break
+            else:
+                continue
+    print('\b\b|')
+    time.sleep(1)
+    if (wickets_in_hand == 0) or (in_2_team_score > in_1_team_score):
+        break
+        
+print(f"\n\n{bowling_team}: {in_2_team_score}/{Wickets - wickets_in_hand} - {over+1 if (ball_count % 6 == 0) and (ball_count != 0) else over}.{ball_count} Overs")            
+
+
+# Results
+
+Run_Margin = in_1_team_score - in_2_team_score if in_1_team_score>in_2_team_score else in_2_team_score-in_1_team_score
+Wicket_Margin = wickets_in_hand
+if in_1_team_score>in_2_team_score:
+    print("\n\n---------------------------------------------")    
+    print(f"{batting_team} won the match by {Run_Margin} Runs!")
+
+elif in_1_team_score == in_2_team_score:
+    print("\n\n---------------------------------------------")
+    print(f"Match Tied!")
+else:
+    print("\n\n---------------------------------------------")
+    print(f"{bowling_team} won the match by {Wicket_Margin} Wickets!")
